@@ -15,7 +15,11 @@ public class Recenzija {
     public Pisac autorRecenzijeID;
     private int ocena;
     private String komentar;
+    
+    public Recenzija() {
 
+       }
+    
     public Recenzija(Long recenzijaID, Knjiga knjigaID, Pisac autorRecenzijeID, int ocena, String komentar) {
         this.recenzijaID = recenzijaID;
         this.knjigaID = knjigaID;
@@ -23,6 +27,8 @@ public class Recenzija {
         this.ocena = ocena;
         this.komentar = komentar;
     }
+
+   
 
     public Long getRecenzijaID() {
         return recenzijaID;

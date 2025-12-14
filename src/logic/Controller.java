@@ -6,6 +6,7 @@ package logic;
 
 import domain.Knjiga;
 import domain.Pisac;
+import domain.Recenzija;
 import java.sql.SQLException;
 import java.util.List;
 import repository.db.DatabaseBroker;
@@ -43,6 +44,24 @@ public class Controller {
         dbbr.connect();
         try{
             return dbbr.vratiListuKnjiga(pisac);
+        }finally{
+            dbbr.disconnect();
+        }
+    }
+    
+    public List<Recenzija> ucitajRecenzijeZaKnjigu(Knjiga knjiga) throws Exception{
+        dbbr.connect();
+        try{
+            return dbbr.vratiListuRecenzijaZaKnjigu(knjiga);
+        }finally{
+            dbbr.disconnect();
+        }
+    }
+    
+    public void unesiKnjigu(Knjiga k) throws Exception{
+        dbbr.connect();
+        try{
+            dbbr.insertKnjiga(k);
         }finally{
             dbbr.disconnect();
         }

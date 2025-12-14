@@ -24,6 +24,13 @@ public class KnjigeTableModel extends AbstractTableModel{
         this.pisac = pisac;
     }
     
+    public Knjiga getKnjiga(int rowIndex){
+        if(rowIndex >= 0 && rowIndex < knjige.size()){
+            return knjige.get(rowIndex);
+        }
+        return null;
+    }
+    
     public void ucitajKnjige() throws Exception{
         knjige = Controller.getinstance().ucitajKnjige(pisac);
         fireTableDataChanged();

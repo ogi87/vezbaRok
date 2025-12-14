@@ -5,6 +5,7 @@
 package repository.db;
 import domain.Knjiga;
 import domain.Pisac;
+import domain.Recenzija;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,6 +85,52 @@ public class DatabaseBroker {
         }
 
         return knjige;
+    }
+    
+    public List<Recenzija> vratiListuRecenzijaZaKnjigu(Knjiga knjiga) throws SQLException{
+        List<Recenzija> recenzije = new ArrayList<>();
+        String query = "SELECT r.recenzijaID, r.ocena, r.komentar, r.autorRecenzijeID, p.ime, p.prezime " +
+                       "FROM recenzija r " + 
+                       "JOIN pisac p ON r.autorRecenzijeID = p.pisacID " +
+                       "WHERE r.knjigaID = ?";
+        
+        PreparedStatement ps = c.prepareStatement(query);
+        ps.setLong(1, knjiga.getKnjigaID());
+        
+        ResultSet rs = ps.executeQuery();
+        
+        while(rs.next()){
+            Pisac autorRecenzije = new Pisac();
+            autorRecenzije.setPisacID(rs.getLong("autorRecenzijeID"));
+            autorRecenzije.setIme(rs.getString("ime"));
+            autorRecenzije.setPrezime(rs.getString("prezime"));
+            
+            Recenzija r = new Recenzija();
+            r.setRecenzijaID(rs.getLong("recenzijaID"));
+            r.setKnjigaID(knjiga);
+            r.setAutorRecenzijeID(autorRecenzije);
+            r.setOcena(rs.getInt("ocena"));
+            r.setKomentar(rs.getString("komentar"));
+            
+            recenzije.add(r);    
+        }
+        return recenzije;
+    }
+    
+    public void insertKnjiga(Knjiga k) throws SQLException{
+        String query = "INSERT INTO knjiga(naziv, datumIzdavanja, tiraz, autorID) VALUES (?, ?, ?, ?)";
+        PreparedStatement ps = c.prepareStatement(query);
+        
+        ps.setString(1, k.getNaziv());
+        // Pretpostavljamo da Knjiga.datumIzdavanja koristi LocalDate (iz domain/Knjiga.java)
+        // Moramo konvertovati u java.sql.Date za bazu:
+        ps.setDate(2, java.sql.Date.valueOf(k.getDatumIzdavanja()));
+        ps.setInt(3, k.getTiraz());
+        // Autor je ulogovani pisac (prosleđen je objektom Knjiga)
+        ps.setLong(4, k.getAutorID().getPisacID());
+        
+        ps.executeUpdate();
+        
     }
     
     

@@ -108,9 +108,9 @@ public class FrmLogin extends javax.swing.JFrame {
        String sifra = new String(txtSifra.getPassword());
        
         try {
-            Controller.getinstance().ulogujPisac(email, sifra);
+            Pisac ulogovaniPisac = Controller.getinstance().ulogujPisac(email, sifra);
             JOptionPane.showMessageDialog(this, "Uspesno prijavljen na sistem", "Uspeh", JOptionPane.INFORMATION_MESSAGE);
-            GlavnaFrm forma = new GlavnaFrm();
+            GlavnaFrm forma = new GlavnaFrm(ulogovaniPisac);
             forma.setVisible(true);
             this.dispose();
         } catch (Exception ex) {

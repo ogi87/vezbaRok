@@ -4,6 +4,7 @@
  */
 package form;
 
+import domain.Knjiga;
 import domain.Pisac;
 import javax.swing.JOptionPane;
 import ui.components.KnjigeTableModel;
@@ -49,6 +50,7 @@ public class GlavnaFrm extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         tblKnjige = new javax.swing.JTable();
+        btnNovaKnjiga = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -63,12 +65,59 @@ public class GlavnaFrm extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblKnjige.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblKnjigeMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblKnjige);
 
         getContentPane().add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
+        btnNovaKnjiga.setText("Dodaj knjigu");
+        btnNovaKnjiga.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNovaKnjigaActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnNovaKnjiga, java.awt.BorderLayout.PAGE_END);
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void tblKnjigeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblKnjigeMouseClicked
+        if(evt.getClickCount() != 2){
+            return;
+        }
+        
+        int selectedRow = tblKnjige.getSelectedRow();
+        
+        if(selectedRow != -1){
+            try{
+                KnjigeTableModel modelKnjiga = (KnjigeTableModel) tblKnjige.getModel();
+                Knjiga izabranaKnjiga = modelKnjiga.getKnjiga(selectedRow);
+                
+                if(izabranaKnjiga != null){
+                    FrmRecenzije formaRecenzije = new FrmRecenzije(izabranaKnjiga);
+                    formaRecenzije.setVisible(true);
+                }
+                
+                
+                
+            }catch(Exception e){
+                JOptionPane.showMessageDialog(this, "Greška pri otvaranju recenzija: " + e.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+            }
+            
+            
+            
+        }
+        
+    }//GEN-LAST:event_tblKnjigeMouseClicked
+
+    private void btnNovaKnjigaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovaKnjigaActionPerformed
+        FrmNovaKnjiga forma = new FrmNovaKnjiga(pisac, this);
+        forma.setVisible(true);
+    }//GEN-LAST:event_btnNovaKnjigaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -96,6 +145,7 @@ public class GlavnaFrm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnNovaKnjiga;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblKnjige;
     // End of variables declaration//GEN-END:variables
@@ -105,6 +155,14 @@ public class GlavnaFrm extends javax.swing.JFrame {
         tblKnjige.setModel(model);
         model.ucitajKnjige();
         
+    }
+
+    public void refreshTable() {
+        try {
+            model.ucitajKnjige();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Greška pri osvežavanju knjiga: " + ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+        }
     }
     
     
